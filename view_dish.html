@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
+    <title>View Dish</title>
+</head>
+<body>
+    <div class="header">
+        <h2>Hello {{ current_user.first_name }}! Here are your dishes!</h2>
+        <div class="links">
+            <a href="/dashboard">Dashboard</a> | <a href="/logout">Logout</a>
+        </div>
+    </div>
+    <div>
+        <h3>{{current_dish.title}}</h3>
+        <div>
+            <p>{{current_dish.description}}</p>
+            <p>{{current_dish.directions}}</p>
+            <p>Posted by: {{current_dish.created_by_user.first_name}}</p>
+            <p>Posted on: {{current_dish.created_at}}</p>
+            <p>Categories:
+                {% if category_empty %}
+                None
+                {% endif %}
+                {% if not category_empty %}
+                <ul>
+                    {% for category in current_dish.categories.all %}
+                    <li>{{category.category}}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </p>
+        </div>
+        {% if current_dish in current_user.created_dishes.all %}
+        <a href="/dishes/{{current_dish.id}}/edit" class="button">Edit</a>
+        {% endif %}
+        {% if current_dish in current_user_added_dishes %}
+        <a href="/dishes/{{current_dish.id}}/remove-from-user" class="button">Remove</a>
+        {% endif %}
+        {% if current_dish in all_dishes %}
+        <a href="/dishes/{{current_dish.id}}/add-to-user" class="button">Nailed it!(Created)</a>
+        {% endif %}
+    </div>
+</body>
+</html>

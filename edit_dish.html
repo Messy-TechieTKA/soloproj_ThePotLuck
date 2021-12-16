@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
+    <title>Edit Dish</title>
+</head>
+<body>
+    <div class="header">
+        <h2>Hello {{ current_user.first_name }}! Let's edit your Dishes!</h2>
+        <div class="links">
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+    <ul class="errors">
+        {% for message in messages %}
+        <li><p style="color: red;">{{ message }}</p></li>
+        {% endfor %}
+    </ul>
+    <div>
+        <h3>Edit Dish:</h3>
+        <form action="/dishes/{{current_dish.id}}/update" method="POST">
+            {% csrf_token %}
+            <div>
+                <label>Title:</label>
+                <input type="text" name="title" value="{{ current_dish.title }}">
+            </div>
+            <div>
+                <label>Description:</label>
+                <textarea name="description" cols="50" rows="7" value="{{ current_dish.description }}">{{ current_dish.description }}</textarea>
+            </div>
+            <div>
+                <label>Directions:</label>
+                <textarea name="directions" cols="50" rows="7" value="{{ current_dish.directions }}">{{ current_dish.directions }}</textarea>
+            </div>
+            <div>
+                <label>Category:</label>
+                <ul>
+                    {% for category in all_categories %}
+                        {% if category in current_dish.categories.all %}
+                        <li><input type="checkbox" name="category" value="{{category.id}}" checked>{{category.category}}</li>
+                        {% endif %}
+                        {% if category not in current_dish.categories.all %}
+                        <li><input type="checkbox" name="category" value="{{category.id}}">{{category.category}}</li>
+                        {% endif %}
+                    {% endfor %}
+                    <li>Other: <input type="text" name="category_text"></li>
+                </ul>
+            </div>
+            <a href="/dashboard" class="button">Cancel</a>
+            <button>Submit</button>
+        </form>
+    </div>
+</body>
+</html>
